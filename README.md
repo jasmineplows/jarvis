@@ -1,4 +1,4 @@
-In this project, I am setting up my own version of J.A.R.V.I.S from the Marvel Cinematic Universe  
+In this project, I have created my own version of J.A.R.V.I.S from the Marvel Cinematic Universe  
   
 Hardware:
 - Raspberry Pi 4B
@@ -7,8 +7,8 @@ Hardware:
   
 Software:
 - pyaudio
-- pocketsphinx
 - speechrecognition
 - ChatGPT3 API
-  
-The aim is to transcribe my voice into text, feed it to ChatGPT3, and read out ChatGPT3's response through the speaker.
+- gTTS (Google text-to-speech)
+    
+By running `src/jarvis.py`, you can say your question aloud into your USB microphone, and Chat-GPT3's answer will be read aloud to you. The program will then terminate.
