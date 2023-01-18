@@ -1,10 +1,8 @@
 import time
 import speech_recognition as sr
-import pyaudio
-import requests
 import os
 import openai
-from gtts import gTTS
+import pyttsx3
 
 # Function to transcribe audio, send to ChatGPT, and read aloud
 def listen_and_respond(after_prompt=True):
@@ -23,7 +21,7 @@ def listen_and_respond(after_prompt=True):
 
 		if after_prompt:
 			recognizer.adjust_for_ambient_noise(source)
-			print("Say 'Hey, Jarvis!' to start recording")
+			print("Say 'Hey, Jarvis!' to start")
 			audio = recognizer.listen(source, phrase_time_limit=5)
 			try:
 				transcription = recognizer.recognize_google(audio)
@@ -38,7 +36,7 @@ def listen_and_respond(after_prompt=True):
 		
 		if start_listening:
 			try:
-				print("Recording...")
+				print("Listening for question...")
 				audio = recognizer.record(source, duration=5)
 				transcription = recognizer.recognize_google(audio)
 				print(f"Input text: {transcription}")
@@ -59,21 +57,18 @@ def listen_and_respond(after_prompt=True):
 				# Print the response from the ChatGPT3 API
 				print(f"Response text: {response_text}")
 
-				# Generate an audio file from the response text
-				tts = gTTS(response_text)
-
-				# Build the file path for the audio file
-				file_path = os.path.join(os.path.abspath(os.pardir), 'sound_files', 'response.mp3')
-
-				# Save the audio file to a file called 'response.mp3'
-				tts.save(file_path)
-
-				# Play the audio using the system's default media player
-				os.system(f'mpg123 {file_path}')
-					
+				#  Say the response
+				engine.say(response_text)
+				engine.runAndWait()
+	
 			except sr.UnknownValueError:
 				print("Unable to transcribe audio")
 
+
+# pyttsx3 engine paramaters
+engine = pyttsx3.init()
+engine.setProperty('rate', 150) 
+engine.setProperty('voice', 'english_north')
 
 # My OpenAI API Key
 openai.api_key = os.environ["API_KEY"]
@@ -88,7 +83,7 @@ first_question = True
 last_question_time = time.time()
 
 # Set threshold for time elapsed before requiring "Hey, Jarvis!" again
-threshold = 60 * 5 # 5 minutes
+threshold = 60 # 1 minute
 
 while True:
 	if (first_question == True) | (time.time() - last_question_time > threshold):
